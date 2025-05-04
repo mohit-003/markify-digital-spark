@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +17,7 @@ interface MarketingStat {
 const Hero = () => {
   const [stats, setStats] = useState<MarketingStat[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -41,6 +43,15 @@ const Hero = () => {
     fetchStats();
   }, []);
 
+  const handleConsultationClick = () => {
+    navigate('/contact');
+  };
+
+  const handleSeeWorkClick = () => {
+    // Navigate to a portfolio page or projects section
+    navigate('/services');
+  };
+
   return (
     <section
       id="home"
@@ -63,11 +74,18 @@ const Hero = () => {
             marketing strategies and creative solutions that deliver results.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button className="bg-markify-purple hover:bg-markify-dark-purple text-white px-8 py-6 text-lg">
+            <Button 
+              className="bg-markify-purple hover:bg-markify-dark-purple text-white px-8 py-6 text-lg"
+              onClick={handleConsultationClick}
+            >
               Get Free Consultation
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button variant="outline" className="border-markify-purple text-markify-purple hover:bg-markify-soft-purple px-8 py-6 text-lg">
+            <Button 
+              variant="outline" 
+              className="border-markify-purple text-markify-purple hover:bg-markify-soft-purple px-8 py-6 text-lg"
+              onClick={handleSeeWorkClick}
+            >
               See Our Work
             </Button>
           </div>

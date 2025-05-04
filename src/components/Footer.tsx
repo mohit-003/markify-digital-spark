@@ -1,5 +1,6 @@
 
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -9,9 +10,11 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
-            <h3 className="text-2xl font-bold mb-6 bg-gradient-to-r from-markify-purple to-markify-light-purple bg-clip-text text-transparent">
-              Markify
-            </h3>
+            <Link to="/" className="inline-block mb-6">
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-markify-purple to-markify-light-purple bg-clip-text text-transparent">
+                Markify
+              </h3>
+            </Link>
             <p className="text-gray-300 mb-6">
               We help businesses grow their online presence through innovative digital marketing strategies.
             </p>
@@ -34,22 +37,22 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-6">Services</h4>
             <ul className="space-y-3">
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Search Engine Optimization</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Social Media Marketing</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Content Marketing</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Web Design & Development</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Analytics & Reporting</a></li>
+              <li><Link to="/services" className="text-gray-300 hover:text-white transition-colors">Search Engine Optimization</Link></li>
+              <li><Link to="/services" className="text-gray-300 hover:text-white transition-colors">Social Media Marketing</Link></li>
+              <li><Link to="/services" className="text-gray-300 hover:text-white transition-colors">Content Marketing</Link></li>
+              <li><Link to="/services" className="text-gray-300 hover:text-white transition-colors">Web Design & Development</Link></li>
+              <li><Link to="/services" className="text-gray-300 hover:text-white transition-colors">Analytics & Reporting</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-lg font-semibold mb-6">Company</h4>
             <ul className="space-y-3">
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">About Us</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Our Team</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Case Studies</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Careers</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Contact Us</a></li>
+              <li><Link to="/about" className="text-gray-300 hover:text-white transition-colors">About Us</Link></li>
+              <li><Link to="/about" className="text-gray-300 hover:text-white transition-colors">Our Team</Link></li>
+              <li><Link to="/services" className="text-gray-300 hover:text-white transition-colors">Case Studies</Link></li>
+              <li><Link to="/about" className="text-gray-300 hover:text-white transition-colors">Careers</Link></li>
+              <li><Link to="/contact" className="text-gray-300 hover:text-white transition-colors">Contact Us</Link></li>
             </ul>
           </div>
 

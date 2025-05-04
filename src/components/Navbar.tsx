@@ -1,9 +1,11 @@
 
 import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 
 const Navbar = () => {
+  const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -16,6 +18,17 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  const isActive = (path: string) => {
+    if (path === "/" && location.pathname === "/") return true;
+    if (path !== "/" && location.pathname.startsWith(path)) return true;
+    return false;
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -25,48 +38,51 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <a href="#" className="flex items-center">
+        <Link to="/" className="flex items-center">
           <span className="text-2xl font-bold bg-gradient-to-r from-markify-purple to-markify-dark-purple bg-clip-text text-transparent">
             Markify
           </span>
-        </a>
+        </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center space-x-8">
-          <a
-            href="#home"
-            className="text-gray-700 hover:text-markify-purple font-medium transition-colors"
+          <Link
+            to="/"
+            className={`font-medium transition-colors ${isActive("/") ? "text-markify-purple" : "text-gray-700 hover:text-markify-purple"}`}
           >
             Home
-          </a>
-          <a
-            href="#services"
-            className="text-gray-700 hover:text-markify-purple font-medium transition-colors"
+          </Link>
+          <Link
+            to="/services"
+            className={`font-medium transition-colors ${isActive("/services") ? "text-markify-purple" : "text-gray-700 hover:text-markify-purple"}`}
           >
             Services
-          </a>
-          <a
-            href="#about"
-            className="text-gray-700 hover:text-markify-purple font-medium transition-colors"
+          </Link>
+          <Link
+            to="/about"
+            className={`font-medium transition-colors ${isActive("/about") ? "text-markify-purple" : "text-gray-700 hover:text-markify-purple"}`}
           >
             About
-          </a>
-          <a
-            href="#testimonials"
-            className="text-gray-700 hover:text-markify-purple font-medium transition-colors"
+          </Link>
+          <Link
+            to="/testimonials"
+            className={`font-medium transition-colors ${isActive("/testimonials") ? "text-markify-purple" : "text-gray-700 hover:text-markify-purple"}`}
           >
             Testimonials
-          </a>
-          <a
-            href="#contact"
-            className="text-gray-700 hover:text-markify-purple font-medium transition-colors"
+          </Link>
+          <Link
+            to="/contact"
+            className={`font-medium transition-colors ${isActive("/contact") ? "text-markify-purple" : "text-gray-700 hover:text-markify-purple"}`}
           >
             Contact
-          </a>
+          </Link>
         </nav>
 
         <div className="hidden md:block">
-          <Button className="bg-markify-purple hover:bg-markify-dark-purple text-white">
+          <Button 
+            className="bg-markify-purple hover:bg-markify-dark-purple text-white"
+            onClick={() => window.location.href = "/contact"}
+          >
             Get Started
           </Button>
         </div>
@@ -84,44 +100,41 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="md:hidden bg-white shadow-lg absolute top-full left-0 right-0 py-4">
           <nav className="flex flex-col space-y-4 px-6">
-            <a
-              href="#home"
-              className="text-gray-700 hover:text-markify-purple font-medium py-2"
-              onClick={() => setMobileMenuOpen(false)}
+            <Link
+              to="/"
+              className={`font-medium py-2 ${isActive("/") ? "text-markify-purple" : "text-gray-700 hover:text-markify-purple"}`}
             >
               Home
-            </a>
-            <a
-              href="#services"
-              className="text-gray-700 hover:text-markify-purple font-medium py-2"
-              onClick={() => setMobileMenuOpen(false)}
+            </Link>
+            <Link
+              to="/services"
+              className={`font-medium py-2 ${isActive("/services") ? "text-markify-purple" : "text-gray-700 hover:text-markify-purple"}`}
             >
               Services
-            </a>
-            <a
-              href="#about"
-              className="text-gray-700 hover:text-markify-purple font-medium py-2"
-              onClick={() => setMobileMenuOpen(false)}
+            </Link>
+            <Link
+              to="/about"
+              className={`font-medium py-2 ${isActive("/about") ? "text-markify-purple" : "text-gray-700 hover:text-markify-purple"}`}
             >
               About
-            </a>
-            <a
-              href="#testimonials"
-              className="text-gray-700 hover:text-markify-purple font-medium py-2"
-              onClick={() => setMobileMenuOpen(false)}
+            </Link>
+            <Link
+              to="/testimonials"
+              className={`font-medium py-2 ${isActive("/testimonials") ? "text-markify-purple" : "text-gray-700 hover:text-markify-purple"}`}
             >
               Testimonials
-            </a>
-            <a
-              href="#contact"
-              className="text-gray-700 hover:text-markify-purple font-medium py-2"
-              onClick={() => setMobileMenuOpen(false)}
+            </Link>
+            <Link
+              to="/contact"
+              className={`font-medium py-2 ${isActive("/contact") ? "text-markify-purple" : "text-gray-700 hover:text-markify-purple"}`}
             >
               Contact
-            </a>
-            <Button className="bg-markify-purple hover:bg-markify-dark-purple text-white w-full">
-              Get Started
-            </Button>
+            </Link>
+            <Link to="/contact" className="mt-2">
+              <Button className="bg-markify-purple hover:bg-markify-dark-purple text-white w-full">
+                Get Started
+              </Button>
+            </Link>
           </nav>
         </div>
       )}
