@@ -1,8 +1,46 @@
 
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
+interface MarketingStat {
+  id: string;
+  name: string;
+  value: string;
+  description: string | null;
+  display_order: number;
+  is_active: boolean;
+}
 
 const Hero = () => {
+  const [stats, setStats] = useState<MarketingStat[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("marketing_stats")
+          .select("*")
+          .eq("is_active", true)
+          .order("display_order", { ascending: true });
+          
+        if (error) {
+          throw error;
+        }
+        
+        setStats(data || []);
+      } catch (error) {
+        console.error("Error fetching marketing stats:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   return (
     <section
       id="home"
@@ -35,28 +73,20 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="mt-16 max-w-5xl mx-auto">
-          <div className="bg-gradient-to-br from-white to-markify-soft-purple rounded-2xl shadow-lg p-6 md:p-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              <div className="stagger-item">
-                <h3 className="text-3xl md:text-4xl font-bold text-markify-purple mb-1">500+</h3>
-                <p className="text-gray-600">Projects Completed</p>
-              </div>
-              <div className="stagger-item">
-                <h3 className="text-3xl md:text-4xl font-bold text-markify-purple mb-1">97%</h3>
-                <p className="text-gray-600">Client Satisfaction</p>
-              </div>
-              <div className="stagger-item">
-                <h3 className="text-3xl md:text-4xl font-bold text-markify-purple mb-1">250+</h3>
-                <p className="text-gray-600">Active Clients</p>
-              </div>
-              <div className="stagger-item">
-                <h3 className="text-3xl md:text-4xl font-bold text-markify-purple mb-1">15+</h3>
-                <p className="text-gray-600">Years Experience</p>
+        {!isLoading && stats.length > 0 && (
+          <div className="mt-16 max-w-5xl mx-auto">
+            <div className="bg-gradient-to-br from-white to-markify-soft-purple rounded-2xl shadow-lg p-6 md:p-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                {stats.map((stat, index) => (
+                  <div className="stagger-item" key={stat.id} style={{ animationDelay: `${index * 0.15}s` }}>
+                    <h3 className="text-3xl md:text-4xl font-bold text-markify-purple mb-1">{stat.value}</h3>
+                    <p className="text-gray-600">{stat.name}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

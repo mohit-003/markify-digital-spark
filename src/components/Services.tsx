@@ -1,41 +1,55 @@
 
+import { useEffect, useState } from "react";
 import { Search, Globe, Code, Edit, Instagram, BarChart } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
 
-const services = [
-  {
-    title: "Search Engine Optimization",
-    description: "Improve your website ranking on search engines and drive organic traffic with our proven SEO strategies.",
-    icon: Search,
-  },
-  {
-    title: "Social Media Marketing",
-    description: "Engage with your audience on social media platforms and build a strong brand presence online.",
-    icon: Instagram,
-  },
-  {
-    title: "Web Design & Development",
-    description: "Create responsive, user-friendly websites that convert visitors into customers and reflect your brand identity.",
-    icon: Code,
-  },
-  {
-    title: "Content Marketing",
-    description: "Develop compelling content that resonates with your audience and drives engagement and conversions.",
-    icon: Edit,
-  },
-  {
-    title: "Digital Strategy",
-    description: "Comprehensive digital strategies tailored to your business goals and target audience.",
-    icon: Globe,
-  },
-  {
-    title: "Analytics & Reporting",
-    description: "Get insights into your campaign performance with detailed analytics and actionable recommendations.",
-    icon: BarChart,
-  },
-];
+interface Service {
+  id: string;
+  title: string;
+  description: string;
+  icon_name: string;
+  is_active: boolean;
+  display_order: number;
+}
+
+const iconMap: Record<string, any> = {
+  "Search": Search,
+  "Globe": Globe,
+  "Code": Code,
+  "Edit": Edit,
+  "Instagram": Instagram,
+  "BarChart": BarChart,
+};
 
 const Services = () => {
+  const [services, setServices] = useState<Service[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("services")
+          .select("*")
+          .eq("is_active", true)
+          .order("display_order", { ascending: true });
+          
+        if (error) {
+          throw error;
+        }
+        
+        setServices(data || []);
+      } catch (error) {
+        console.error("Error fetching services:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
   return (
     <section id="services" className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -46,25 +60,35 @@ const Services = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service, index) => (
-            <div key={index} className="stagger-item" style={{ animationDelay: `${index * 0.1}s` }}>
-              <Card className="card-hover h-full bg-white border-none shadow-md">
-                <CardHeader>
-                  <div className="w-12 h-12 bg-markify-soft-purple rounded-lg flex items-center justify-center mb-4">
-                    <service.icon className="text-markify-purple w-6 h-6" />
-                  </div>
-                  <CardTitle>{service.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base text-gray-600">
-                    {service.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            </div>
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-markify-purple"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {services.map((service, index) => {
+              const IconComponent = iconMap[service.icon_name] || Globe;
+              
+              return (
+                <div key={service.id} className="stagger-item" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <Card className="card-hover h-full bg-white border-none shadow-md">
+                    <CardHeader>
+                      <div className="w-12 h-12 bg-markify-soft-purple rounded-lg flex items-center justify-center mb-4">
+                        <IconComponent className="text-markify-purple w-6 h-6" />
+                      </div>
+                      <CardTitle>{service.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription className="text-base text-gray-600">
+                        {service.description}
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );

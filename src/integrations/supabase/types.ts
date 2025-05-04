@@ -9,7 +9,144 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      leads: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          service_interest: string | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          service_interest?: string | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          service_interest?: string | null
+        }
+        Relationships: []
+      }
+      marketing_stats: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order: number
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      services: {
+        Row: {
+          created_at: string
+          description: string
+          display_order: number
+          icon_name: string
+          id: string
+          is_active: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          display_order: number
+          icon_name: string
+          id?: string
+          is_active?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          display_order?: number
+          icon_name?: string
+          id?: string
+          is_active?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          avatar_url: string | null
+          client_company: string
+          client_name: string
+          client_position: string
+          content: string
+          created_at: string
+          display_order: number
+          id: string
+          is_featured: boolean
+          rating: number
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          client_company: string
+          client_name: string
+          client_position: string
+          content: string
+          created_at?: string
+          display_order: number
+          id?: string
+          is_featured?: boolean
+          rating: number
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          client_company?: string
+          client_name?: string
+          client_position?: string
+          content?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_featured?: boolean
+          rating?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -1,42 +1,48 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Quote } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-const testimonials = [
-  {
-    content:
-      "Working with Markify transformed our online presence completely. Their SEO strategies helped us achieve a 200% increase in organic traffic within just 6 months.",
-    author: "Sarah Johnson",
-    position: "Marketing Director, TechCorp",
-    image: "https://randomuser.me/api/portraits/women/44.jpg",
-  },
-  {
-    content:
-      "The social media campaign Markify created for us exceeded all our expectations. We saw a significant boost in engagement and a 45% increase in conversion rates.",
-    author: "Michael Chen",
-    position: "CEO, InnovateTech",
-    image: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-  {
-    content:
-      "Markify's content strategy helped us establish authority in our industry. Their team's creativity and attention to detail are unmatched in the digital marketing space.",
-    author: "Emily Rodriguez",
-    position: "Brand Manager, FashionPlus",
-    image: "https://randomuser.me/api/portraits/women/68.jpg",
-  },
-  {
-    content:
-      "They completely redesigned our website and the results were immediate. Bounce rates decreased by 40% and conversions increased by 25%. Truly impressive work!",
-    author: "David Wilson",
-    position: "Operations Director, BuildRight",
-    image: "https://randomuser.me/api/portraits/men/46.jpg",
-  },
-];
+interface Testimonial {
+  id: string;
+  client_name: string;
+  client_position: string;
+  client_company: string;
+  avatar_url: string | null;
+  content: string;
+  rating: number;
+  is_featured: boolean;
+}
 
 const Testimonials = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("testimonials")
+          .select("*")
+          .order("display_order", { ascending: true });
+          
+        if (error) {
+          throw error;
+        }
+        
+        setTestimonials(data || []);
+      } catch (error) {
+        console.error("Error fetching testimonials:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
 
   const nextTestimonial = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
@@ -47,6 +53,20 @@ const Testimonials = () => {
       (prevIndex) => (prevIndex - 1 + testimonials.length) % testimonials.length
     );
   };
+
+  if (isLoading) {
+    return (
+      <section id="testimonials" className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4 flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-markify-purple"></div>
+        </div>
+      </section>
+    );
+  }
+
+  if (testimonials.length === 0) {
+    return null;
+  }
 
   return (
     <section id="testimonials" className="py-20 bg-gray-50">
@@ -71,17 +91,25 @@ const Testimonials = () => {
                 "{testimonials[currentIndex].content}"
               </p>
               <div className="flex items-center justify-center">
-                <img
-                  src={testimonials[currentIndex].image}
-                  alt={testimonials[currentIndex].author}
-                  className="w-16 h-16 rounded-full border-4 border-markify-soft-purple"
-                />
+                {testimonials[currentIndex].avatar_url ? (
+                  <img
+                    src={testimonials[currentIndex].avatar_url}
+                    alt={testimonials[currentIndex].client_name}
+                    className="w-16 h-16 rounded-full border-4 border-markify-soft-purple object-cover"
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-full bg-markify-soft-purple flex items-center justify-center border-4 border-markify-soft-purple">
+                    <span className="text-markify-purple text-xl font-bold">
+                      {testimonials[currentIndex].client_name.charAt(0)}
+                    </span>
+                  </div>
+                )}
                 <div className="ml-4 text-left">
                   <p className="font-semibold text-lg">
-                    {testimonials[currentIndex].author}
+                    {testimonials[currentIndex].client_name}
                   </p>
                   <p className="text-gray-500">
-                    {testimonials[currentIndex].position}
+                    {testimonials[currentIndex].client_position}, {testimonials[currentIndex].client_company}
                   </p>
                 </div>
               </div>
@@ -115,6 +143,7 @@ const Testimonials = () => {
                     ? "bg-markify-purple"
                     : "bg-gray-300"
                 }`}
+                aria-label={`Go to testimonial ${index + 1}`}
               ></button>
             ))}
           </div>
